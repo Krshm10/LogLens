@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LogLens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <main class="wrap home">
+        <a class="brand" th:href="@{/}">LogLens</a>
+
+        <h1 class="big">Drop in a log file.<br>See what went wrong.</h1>
+        <p class="lead">Thousands of lines in, a short list of problems out</p>
+
+        <div class="alert" role="alert" th:if="${error}" th:text="${error}">Error message</div>
+
+        <form th:action="@{/analyze}" method="post" enctype="multipart/form-data" id="uploadForm">
+            <label class="drop" id="drop" for="file">
+                <input type="file" id="file" name="file" accept=".log,.txt" required>
+                <span class="drop-title" id="dropTitle">Choose a file or drag it here</span>
+                <span class="drop-sub" id="dropSub">.log or .txt, up to 5 MB</span>
+            </label>
+            <button type="submit" id="go" disabled>Analyze file</button>
+        </form>
+
+        <section class="format" aria-label="Supported format">
+            <p>LogLens reads lines that look like this:</p>
+            <pre class="snippet"><span class="t">2026-10-11 10:00:03</span> <span class="l-INFO">INFO</span>  Database connected
+<span class="t">2026-10-11 10:00:05</span> <span class="l-ERROR">ERROR</span> Database connection failed
+<span class="t">2026-10-11 10:00:08</span> <span class="l-WARN">WARN</span>  Retry attempt</pre>
+            
+        </section>
+    </main>
+
+    <script>
+        
+        const input = document.getElementById('file');
+        const drop = document.getElementById('drop');
+        const go = document.getElementById('go');
+        const title = document.getElementById('dropTitle');
+        const sub = document.getElementById('dropSub');
+
+        function showFile() {
+            const f = input.files[0];
+            go.disabled = !f;
+            if (f) {
+                title.textContent = f.name;
+                sub.textContent = (f.size / 1024).toFixed(1) + ' KB. Ready to analyze.';
+            }
+        }
+        input.addEventListener('change', showFile);
+        ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+        ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+        drop.addEventListener('drop', e => { input.files = e.dataTransfer.files; showFile(); });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LogLens - Results</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <main class="wrap">
+        <nav class="top">
+            <a class="brand" th:href="@{/}">LogLens</a>
+            <span class="file" th:text="${fileName}">app.log</span>
+            <a class="again" th:href="@{/}">Analyze another file</a>
+        </nav>
+
+        <!-- The answer first, in plain words -->
+        <h1 class="big" th:text="${result.headline}">4 errors in 120 log lines.</h1>
+        <p class="lead" th:if="${!result.hint.isEmpty()}" th:text="${result.hint}">Start here.</p>
+
+        <!-- Counts -->
+        <dl class="counts">
+            <div>
+                <dt><i class="dot lvl-ERROR"></i>Errors</dt>
+                <dd th:text="${result.errorCount}">0</dd>
+            </div>
+            <div>
+                <dt><i class="dot lvl-WARN"></i>Warnings</dt>
+                <dd th:text="${result.warnCount}">0</dd>
+            </div>
+            <div>
+                <dt><i class="dot lvl-INFO"></i>Info</dt>
+                <dd th:text="${result.infoCount}">0</dd>
+            </div>
+            <div>
+                <dt><i class="dot lvl-DEBUG"></i>Debug</dt>
+                <dd th:text="${result.debugCount}">0</dd>
+            </div>
+            <div>
+                <dt>Skipped lines</dt>
+                <dd th:text="${result.unrecognizedLines}">0</dd>
+            </div>
+        </dl>
+
+        <!-- Repeated errors as bars -->
+        <section class="block">
+            <h2>Errors that keep happening</h2>
+            <p class="note" th:if="${result.repeatedErrors.isEmpty()}">No error message showed up more than once.</p>
+            <ul class="bars" th:unless="${result.repeatedErrors.isEmpty()}"
+                th:with="max=${result.repeatedErrors.values().iterator().next()}">
+                <li th:each="r : ${result.repeatedErrors}">
+                    <span class="msg" th:text="${r.key}">Database connection failed</span>
+                    <span class="track"><span class="fill"
+                            th:style="${'width:' + (r.value * 100 / max) + '%'}"></span></span>
+                    <span class="times" th:text="${r.value + ' times'}">3 times</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Search + filter -->
+        <section class="block">
+            <h2>Every log line</h2>
+            <div class="filters">
+                <input type="search" id="search" placeholder="Search messages" aria-label="Search messages">
+                <div class="pills" id="pills" role="group" aria-label="Filter by level">
+                    <button type="button" class="pill active" data-level="">All</button>
+                    <button type="button" class="pill" data-level="ERROR">Errors</button>
+                    <button type="button" class="pill" data-level="WARN">Warnings</button>
+                    <button type="button" class="pill" data-level="INFO">Info</button>
+                    <button type="button" class="pill" data-level="DEBUG">Debug</button>
+                </div>
+                <span class="note" id="shown"></span>
+            </div>
+
+            <div class="table-wrap">
+                <table id="logTable">
+                    <thead>
+                        <tr>
+                            <th>Line</th>
+                            <th>Time</th>
+                            <th>Level</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="e : ${result.entries}" th:attr="data-level=${e.level}"
+                            th:classappend="${'row-' + e.level}">
+                            <td class="num" th:text="${e.lineNumber}">1</td>
+                            <td class="num" th:text="${e.formattedTimestamp}">2026-10-11 10:00:01</td>
+                            <td><span class="badge" th:classappend="${'lvl-' + e.level}"
+                                    th:text="${e.level}">INFO</span></td>
+                            <td class="logmsg" th:text="${e.message}">Application started</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="note" id="empty" hidden>No lines match. Try a different word or level.</p>
+        </section>
+    </main>
+
+    <script>
+        const search = document.getElementById('search');
+        const pills = document.querySelectorAll('.pill');
+        const rows = document.querySelectorAll('#logTable tbody tr');
+        const shown = document.getElementById('shown');
+        const empty = document.getElementById('empty');
+        let level = '';
+
+        function applyFilter() {
+            const text = search.value.toLowerCase();
+            let count = 0;
+            rows.forEach(row => {
+                const ok = (!level || row.dataset.level === level)
+                    && row.cells[3].textContent.toLowerCase().includes(text);
+                row.hidden = !ok;
+                if (ok) count++;
+            });
+            shown.textContent = 'Showing ' + count + ' of ' + rows.length;
+            empty.hidden = count !== 0;
+        }
+        search.addEventListener('input', applyFilter);
+        pills.forEach(p => p.addEventListener('click', () => {
+            pills.forEach(x => x.classList.remove('active'));
+            p.classList.add('active');
+            level = p.dataset.level;
+            applyFilter();
+        }));
+        applyFilter();
+    </script>
+</body>
+
+</html>

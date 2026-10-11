@@ -1,0 +1,12 @@
+2026-10-11 10:00:01 INFO Application started
+2026-10-11 10:00:03 INFO Database connected
+2026-10-11 10:00:05 ERROR Database connection failed
+2026-10-11 10:00:06 ERROR Database connection failed
+2026-10-11 10:00:08 WARN Retry attempt
+this line is garbage and should be counted as unrecognized
+2026-10-11 10:00:10 DEBUG Loading user profile
+2026-10-11 10:00:12 ERROR File not found: config.yml
+2026-10-11 10:00:15 ERROR Database connection failed
+2026-10-11 10:00:20 WARN Slow response: 2300ms
+2026-10-11 10:00:25 INFO Retry succeeded
+2026-13-45 10:00:30 ERROR Impossible date line
