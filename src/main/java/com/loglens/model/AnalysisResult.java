@@ -5,23 +5,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * The final report for one uploaded file. Mostly a data holder.
- */
 public class AnalysisResult {
 
-    private int totalLines; // non-blank lines in the file
-    private int unrecognizedLines; // lines that did not match our format
+    private int totalLines;
+    private int unrecognizedLines;
     private int infoCount;
     private int warnCount;
     private int errorCount;
     private int debugCount;
     private List<LogEntry> entries = new ArrayList<>();
-    // error message -> how many times it appeared (only messages seen 2+ times),
-    // biggest first
     private Map<String, Integer> repeatedErrors = new LinkedHashMap<>();
 
-    /** Number of lines that were successfully parsed. */
     public int getTotalEntries() {
         return entries.size();
     }
@@ -90,7 +84,6 @@ public class AnalysisResult {
         this.repeatedErrors = repeatedErrors;
     }
 
-    /** One plain-English sentence shown at the top of the results page. */
     public String getHeadline() {
         if (errorCount == 0) {
             if (warnCount == 0) {
@@ -101,10 +94,6 @@ public class AnalysisResult {
         return errorCount + (errorCount == 1 ? " error" : " errors") + " in " + getTotalEntries() + " log lines.";
     }
 
-    /**
-     * A short pointer on where to start looking. A lead, never a claimed root
-     * cause.
-     */
     public String getHint() {
         if (errorCount == 0) {
             return "";

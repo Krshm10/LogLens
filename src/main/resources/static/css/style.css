@@ -116,7 +116,6 @@ h2 {
         margin: 0 0 18px;
 }
 
-/* Home: upload */
 .drop {
         display: block;
         border: 1.5px dashed var(--line-strong);
@@ -214,7 +213,6 @@ button#go:disabled {
         color: var(--info);
 }
 
-/* Results: top bar */
 .top {
         display: flex;
         gap: 16px;
@@ -235,7 +233,6 @@ button#go:disabled {
         font-size: .9rem;
 }
 
-/* Barcode card */
 .barcode-block {
         margin: 8px 0 18px;
         padding: 18px;
@@ -288,7 +285,6 @@ button#go:disabled {
         }
 }
 
-/* Stat cards */
 .counts {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -352,7 +348,6 @@ button#go:disabled {
         background: var(--info);
 }
 
-/* Content panels */
 .block {
         background: var(--panel);
         border: 1px solid var(--line);
@@ -361,7 +356,6 @@ button#go:disabled {
         margin-bottom: 18px;
 }
 
-/* Repeated errors */
 .bars {
         list-style: none;
         margin: 0;
@@ -402,7 +396,6 @@ button#go:disabled {
         border-radius: 99px;
 }
 
-/* Filters */
 .filters {
         display: flex;
         gap: 12px;
@@ -455,7 +448,6 @@ button#go:disabled {
         font-weight: 600;
 }
 
-/* Table */
 .table-wrap {
         background: var(--panel-2);
         border: 1px solid var(--line);

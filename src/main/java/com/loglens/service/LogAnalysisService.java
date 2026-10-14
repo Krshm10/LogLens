@@ -14,28 +14,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Coordinates the steps: validate -> read lines -> parse -> analyze.
- * Business rules live here, not in the controller.
- */
 @Service
 public class LogAnalysisService {
 
-    private static final long MAX_BYTES = 5L * 1024 * 1024; // 5 MB
+    private static final long MAX_BYTES = 5L * 1024 * 1024;
 
     private final LogParser parser;
     private final LogAnalyzer analyzer;
 
-    // Constructor injection: Spring passes in the parser and analyzer for us.
-    // (Preferred over field @Autowired because the dependencies are explicit and easy to mock in tests.)
     public LogAnalysisService(LogParser parser, LogAnalyzer analyzer) {
         this.parser = parser;
         this.analyzer = analyzer;
     }
 
-    /**
-     * @throws IllegalArgumentException with a user-friendly message if the file is not acceptable
-     */
     public AnalysisResult analyzeFile(MultipartFile file) throws IOException {
         validate(file);
 
@@ -43,7 +34,6 @@ public class LogAnalysisService {
         int totalLines = 0;
         int unrecognized = 0;
 
-        // We only READ the file as text. It is never executed or saved to disk.
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
@@ -51,7 +41,7 @@ public class LogAnalysisService {
             while ((line = reader.readLine()) != null) {
                 lineNumber++;
                 if (line.isBlank()) {
-                    continue; // empty lines are not "unrecognized", just ignored
+                    continue;
                 }
                 totalLines++;
                 LogEntry entry = parser.parseLine(line, lineNumber);

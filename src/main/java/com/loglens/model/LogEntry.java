@@ -3,18 +3,14 @@ package com.loglens.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * One successfully parsed log line.
- * Plain class with getters (instead of a record) so Thymeleaf can read ${entry.level} easily.
- */
 public class LogEntry {
 
     private static final DateTimeFormatter DISPLAY = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final LocalDateTime timestamp;
-    private final String level;      // INFO, WARN, ERROR or DEBUG
+    private final String level;
     private final String message;
-    private final int lineNumber;    // line in the uploaded file, handy for debugging
+    private final int lineNumber;
 
     public LogEntry(LocalDateTime timestamp, String level, String message, int lineNumber) {
         this.timestamp = timestamp;
@@ -28,6 +24,5 @@ public class LogEntry {
     public String getMessage() { return message; }
     public int getLineNumber() { return lineNumber; }
 
-    /** Used by the HTML page so we don't need extra Thymeleaf date libraries. */
     public String getFormattedTimestamp() { return timestamp.format(DISPLAY); }
 }

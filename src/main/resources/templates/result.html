@@ -21,11 +21,9 @@
             <a class="again" th:href="@{/}">Analyze another file</a>
         </nav>
 
-        <!-- The answer first, in plain words -->
         <h1 class="big" th:text="${result.headline}">4 errors in 120 log lines.</h1>
         <p class="lead" th:if="${!result.hint.isEmpty()}" th:text="${result.hint}">Start here.</p>
 
-        <!-- Counts -->
         <dl class="counts">
             <div>
                 <dt><i class="dot lvl-ERROR"></i>Errors</dt>
@@ -49,7 +47,6 @@
             </div>
         </dl>
 
-        <!-- Repeated errors as bars -->
         <section class="block">
             <h2>Errors that keep happening</h2>
             <p class="note" th:if="${result.repeatedErrors.isEmpty()}">No error message showed up more than once.</p>
@@ -64,7 +61,6 @@
             </ul>
         </section>
 
-        <!-- Search + filter -->
         <section class="block">
             <h2>Every log line</h2>
             <div class="filters">

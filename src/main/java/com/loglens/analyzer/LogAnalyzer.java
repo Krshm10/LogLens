@@ -9,10 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Does the counting. Knows nothing about files or web: it only gets a list of entries.
- * That makes it very easy to unit test.
- */
 @Component
 public class LogAnalyzer {
 
@@ -20,7 +16,6 @@ public class LogAnalyzer {
         AnalysisResult result = new AnalysisResult();
         result.setEntries(entries);
 
-        // HashMap = O(1) lookup, so counting N errors takes one pass: O(N)
         Map<String, Integer> errorCounts = new HashMap<>();
 
         for (LogEntry entry : entries) {
@@ -30,15 +25,12 @@ public class LogAnalyzer {
                 case "DEBUG" -> result.setDebugCount(result.getDebugCount() + 1);
                 case "ERROR" -> {
                     result.setErrorCount(result.getErrorCount() + 1);
-                    // merge: if key is new put 1, otherwise add 1 to the existing count
                     errorCounts.merge(entry.getMessage(), 1, Integer::sum);
                 }
-                default -> { /* parser only produces the 4 levels above */ }
+                default -> {}
             }
         }
 
-        // Keep only messages seen 2+ times, sorted with the biggest count first.
-        // LinkedHashMap remembers insertion order, so the sorted order survives.
         Map<String, Integer> repeated = new LinkedHashMap<>();
         errorCounts.entrySet().stream()
                 .filter(e -> e.getValue() > 1)

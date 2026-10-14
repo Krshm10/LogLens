@@ -31,7 +31,7 @@ class LogAnalysisServiceTest {
 
         AnalysisResult r = service.analyzeFile(file("app.log", content));
 
-        assertThat(r.getTotalLines()).isEqualTo(4);        // blank line ignored
+        assertThat(r.getTotalLines()).isEqualTo(4);
         assertThat(r.getTotalEntries()).isEqualTo(3);
         assertThat(r.getUnrecognizedLines()).isEqualTo(1);
         assertThat(r.getRepeatedErrors()).containsEntry("Boom", 2);
